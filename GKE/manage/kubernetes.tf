@@ -1,7 +1,7 @@
 data "terraform_remote_state" "gke" {
   backend = "remote"
   config = {
-    organization = "PEACEHAVENCORP"
+    organization = "2up"
     workspaces = {
       name = "terraform-jenkins-GKE-provision"
     }

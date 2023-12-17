@@ -1,6 +1,6 @@
 terraform {
   cloud {
-    organization = "PEACEHAVENCORP"
+    organization = "2up"
     workspaces {
       name = "terraform-jenkins-EKS-manage"
     }

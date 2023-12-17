@@ -2,7 +2,7 @@
 data "terraform_remote_state" "gke" {
   backend = "remote"
   config = {
-    organization = "PEACEHAVENCORP"
+    organization = "2up"
     workspaces = {
       name = "terraform-jenkins-GKE-provision"
     }
@@ -95,7 +95,7 @@ resource "kubernetes_service" "counting" {
 data "terraform_remote_state" "eks" {
   backend = "remote"
   config = {
-    organization = "PEACEHAVENCORP"
+    organization = "2up"
     workspaces = {
       name = "terraform-jenkins-EKS-provision"
     }

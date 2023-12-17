@@ -3,7 +3,7 @@
 data "terraform_remote_state" "eks" {
   backend = "remote"
   config = {
-    organization = "PEACEHAVENCORP"
+    organization = "2up"
     workspaces = {
       name = "terraform-jenkins-EKS-provision"
     }
@@ -71,7 +71,7 @@ data "kubernetes_secret" "eks_federation_secret" {
 data "terraform_remote_state" "gke" {
   backend = "remote"
   config = {
-    organization = "PEACEHAVENCORP"
+    organization = "2up"
     workspaces = {
       name = "terraform-jenkins-GKE-provision"
     }
