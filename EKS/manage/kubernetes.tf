@@ -15,8 +15,7 @@ terraform {
 data "terraform_remote_state" "eks" {
   backend = "remote"
   config = {
-    # organization = "2up"
-    organization = "org-shuYUnrSMdf6B6ab"
+    organization = "2up"
     workspaces = {
       name = "terraform-jenkins-EKS-provision"
     }

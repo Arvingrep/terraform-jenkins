@@ -1,12 +1,13 @@
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.14.2"
+  version = "~> 3.19.0"
 
   name = "arvin-jenkins-eks-vpc"
 
   cidr = "10.0.0.0/16"
-  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
-
+  # azs  = slice(data.aws_availability_zones.available.names, 1, 4)
+  # azs = var.vpc_availability_zones
+  azs = ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"] 
   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
 
