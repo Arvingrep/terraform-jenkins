@@ -4,8 +4,10 @@
 terraform {
 
   cloud {
+    organization = "2up"
     workspaces {
-      name = "learn-terraform-eks"
+      project = "2up-aws"
+      name = "terraform-jenkins-EKS-provision"
     }
   }
 

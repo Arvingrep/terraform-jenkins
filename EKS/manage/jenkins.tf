@@ -7,7 +7,7 @@ resource "helm_release" "jenkins" {
   namespace  = "jenkins"
   timeout    = 600
   values = [
-    file("../../values.yaml"),
+    file("values.yaml"),
   ]
 
   depends_on = [
