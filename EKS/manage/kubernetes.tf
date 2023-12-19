@@ -28,7 +28,7 @@ provider "aws" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = data.terraform_remote_state.eks.outputs.cluster_id
+  name = data.terraform_remote_state.eks.outputs.cluster_name
 }
 
 provider "kubernetes" {
