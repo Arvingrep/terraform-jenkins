@@ -13,14 +13,20 @@
 # ref: https://github.com/kubernetes/dns/blob/master/docs/specification.md
 clusterZone: "cluster.local"
 
+# The URL of the Kubernetes API server
+kubernetesURL: "https://kubernetes.default"
+
+# The Jenkins credentials to access the Kubernetes API server. For the the default cluster it is not needed.
+credentialsId:
+
 renderHelmLabels: true
 
 controller:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-controller"
   image: "jenkins/jenkins"
-  # tag: "2.375.1-jdk11"
-  tagLabel: jdk11
+  # tag: "2.426.2-jdk17"
+  tagLabel: jdk17
   imagePullPolicy: "Always"
   imagePullSecretName:
   # Optionally configure lifetime for controller-container
@@ -69,6 +75,8 @@ controller:
     limits:
       cpu: "2000m"
       memory: "4096Mi"
+  # Share process namespace to allow sidecar containers to interact with processes in other containers in the same pod
+  shareProcessNamespace: false
   # Overrides the init container default values
   # initContainerResources:
   #   requests:
@@ -141,7 +149,7 @@ controller:
   #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
   # Put labels on Jenkins controller pod
   podLabels: {}
-  # Used to create Ingress record (should used with ServiceType: ClusterIP)
+  # Used to create Ingress record (should be used with ServiceType: ClusterIP)
   # nodePort: <to set explicitly, choose port between 30000-32767
   # Enable Kubernetes Startup, Liveness and Readiness Probes
   # if Startup Probe is supported, enable it too
@@ -239,10 +247,10 @@ controller:
 
   # List of plugins to be install during Jenkins controller start
   installPlugins:
-    - kubernetes:3734.v562b_b_a_627ea_c
-    - workflow-aggregator:590.v6a_d052e5a_a_b_5
-    - git:4.13.0
-    - configuration-as-code:1569.vb_72405b_80249
+    - kubernetes:4029.v5712230ccb_f8
+    - workflow-aggregator:596.v8c21c963d92d
+    - git:5.1.0
+    - configuration-as-code:1670.v564dc8b_982d0
 
   # Set to false to download the minimum required version of all dependencies.
   installLatestPlugins: true
@@ -361,7 +369,7 @@ controller:
       # jcasc changes will cause a reboot and will only be applied at the subsequent start-up.  Auto-reload uses the
       # http://<jenkins_url>/reload-configuration-as-code endpoint to reapply config when changes to the configScripts are detected.
       enabled: true
-      image: kiwigrid/k8s-sidecar:1.15.0
+      image: kiwigrid/k8s-sidecar:1.24.4
       imagePullPolicy: IfNotPresent
       resources: {}
         #   limits:
@@ -541,6 +549,14 @@ controller:
     # Set a custom namespace where to deploy PrometheusRule resource
     prometheusRuleNamespace: ""
 
+    # RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds
+    # relabelings for a few standard Kubernetes fields. The original scrape job’s name
+    # is available via the __tmp_prometheus_job_name label.
+    # More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+    relabelings: []
+    # MetricRelabelConfigs to apply to samples before ingestion.
+    metricRelabelings: []
+
   googlePodMonitor:
     # If enabled, It creates Google Managed Prometheus scraping config
     enabled: false
@@ -555,7 +571,11 @@ controller:
 
   httpsKeyStore:
     jenkinsHttpsJksSecretName: ''
+    jenkinsHttpsJksSecretKey: "jenkins-jks-file"
+    jenkinsHttpsJksPasswordSecretName: ""
+    jenkinsHttpsJksPasswordSecretKey: "https-jks-password"
     enable: false
+    disableSecretMount: false
     httpPort: 8081
     path: "/var/jenkins_keystore"
     fileName: "keystore.jks"
@@ -606,16 +626,20 @@ controller:
 agent:
   enabled: true
   defaultsProviderTemplate: ""
-  # URL for connecting to the Jenkins contoller
+  # URL for connecting to the Jenkins controller
   jenkinsUrl:
   # connect to the specified host and port, instead of connecting directly to the Jenkins controller
   jenkinsTunnel:
   kubernetesConnectTimeout: 5
   kubernetesReadTimeout: 15
   maxRequestsPerHostStr: "32"
+  retentionTimeout: 5
+  waitForPodSec: 600
   namespace:
+  # private registry for agent image
+  jnlpregistry:
   image: "jenkins/inbound-agent"
-  tag: "4.11.2-4"
+  tag: "3192.v713e3b_039fb_e-5"
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"
   customJenkinsLabels: []
@@ -623,6 +647,7 @@ agent:
   imagePullSecretName:
   componentName: "jenkins-agent"
   websocket: false
+  directConnection: false
   privileged: false
   runAsUser:
   runAsGroup:
@@ -631,9 +656,18 @@ agent:
     requests:
       cpu: "512m"
       memory: "512Mi"
+      # ephemeralStorage:
     limits:
       cpu: "512m"
       memory: "512Mi"
+      # ephemeralStorage:
+  livenessProbe: {}
+#    execArgs: "cat /tmp/healthy"
+#    failureThreshold: 3
+#    initialDelaySeconds: 0
+#    periodSeconds: 10
+#    successThreshold: 1
+#    timeoutSeconds: 1
   # You may want to change this to true while testing a new image
   alwaysPullImage: false
   # Controls how agent pods are retained after the Jenkins build completes
@@ -700,6 +734,12 @@ agent:
   envVars: []
   # - name: PATH
   #   value: /usr/local/bin
+  # Mount a secret as environment variable
+  secretEnvVars: []
+  # - key: PATH
+  #   optional: false # default: false
+  #   secretKey: MY-K8S-PATH
+  #   secretName: my-k8s-secret
   nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
@@ -802,6 +842,27 @@ additionalAgents: {}
 #    args: "cat"
 #    TTYEnabled: true
 
+# Here you can add additional clouds
+# They inherit all values from the default cloud (including the main agent), so
+# you only need to specify values which differ. If you want to override
+# default additionalAgents with the additionalClouds.additionalAgents set
+# additionalAgentsOverride to `true`.
+additionalClouds: {}
+#  remote-cloud-1:
+#    kubernetesURL: https://api.remote-cloud.com
+#    additionalAgentsOverride: true
+#    additionalAgents:
+#      maven-2:
+#        podName: maven-2
+#        customJenkinsLabels: maven
+#        # An example of overriding the jnlp container
+#        # sideContainerName: jnlp
+#        image: jenkins/jnlp-agent-maven
+#        tag: latest
+#        namespace: my-other-maven-namespace
+#  remote-cloud-2:
+#    kubernetesURL: https://api.remote-cloud.com
+
 persistence:
   enabled: true
   ## A manually managed Persistent Volume and Claim
@@ -820,6 +881,11 @@ persistence:
   labels: {}
   accessMode: "ReadWriteOnce"
   size: "8Gi"
+  # Existing data source to clone PVC from
+  # ref: https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/
+  dataSource:
+  #   name: PVC-NAME
+  #   kind: PersistentVolumeClaim
   volumes:
   #  - name: nothing
   #    emptyDir: {}
@@ -855,6 +921,7 @@ serviceAccount:
   # The name of the service account is autogenerated by default
   name:
   annotations: {}
+  extraLabels: {}
   imagePullSecretName:
 
 
@@ -865,6 +932,7 @@ serviceAccountAgent:
   # If not set and create is true, a name is generated using the fullname template
   name:
   annotations: {}
+  extraLabels: {}
   imagePullSecretName:
 
 ## Backup cronjob configuration
@@ -872,7 +940,7 @@ serviceAccountAgent:
 backup:
   # Backup must use RBAC
   # So by enabling backup you are enabling RBAC specific for backup
-  enabled: false
+  enabled: true
   # Used for label app.kubernetes.io/component
   componentName: "backup"
   # Schedule to run jobs. Must be in cron time format
@@ -897,7 +965,10 @@ backup:
   # Ref: https://github.com/maorfr/kube-tasks#simple-backup
   extraArgs: []
   # Add existingSecret for AWS credentials
-  existingSecret: {}
+  existingSecret:
+    jenkinsaws:
+      awsaccesskey: "${AWS_ACCESS_KEY_ID}"
+      awssecretkey: "${AWS_SECRET_ACCESS_KEY}"
   ## Example for using an existing secret
    # jenkinsaws:
   ## Use this key for AWS access key ID
@@ -923,7 +994,7 @@ backup:
   # Supported cloud storage services: AWS S3, Minio S3, Azure Blob Storage, Google Cloud Storage
   # Additional support can added. Visit this repository for details
   # Ref: https://github.com/maorfr/skbn
-  destination: "s3://jenkins-data/backup"
+  destination: "s3://terraform-on/jenkins-data/backup/"
   # By enabling only the jenkins_home/jobs folder gets backed up, not the whole jenkins instance
   onlyJobs: false
   # Enable backup pod security context (must be `true` if runAsUser or fsGroup are set)
@@ -934,6 +1005,9 @@ backup:
   securityContextCapabilities: {}
   #  drop:
   #    - NET_RAW
+cronJob:
+  apiVersion: batch/v1
+
 checkDeprecation: true
 
 awsSecurityGroupPolicies:
@@ -942,3 +1016,11 @@ awsSecurityGroupPolicies:
     - name: ""
       securityGroupIds: []
       podSelector: {}
+
+# Here you can configure unit tests values when executing the helm unittest in the CONTRIBUTING.md
+helmtest:
+  # A testing framework for bash
+  bats:
+    # Bash Automated Testing System (BATS)
+    image: "bats/bats"
+    tag: "1.9.0"
