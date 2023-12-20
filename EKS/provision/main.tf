@@ -16,6 +16,8 @@ data "aws_availability_zones" "available" {
 
 locals {
   cluster_name = "${var.used_name}-${random_string.suffix.result}"
+  name = "${var.used_name}"
+
 }
 
 resource "random_string" "suffix" {
@@ -89,6 +91,16 @@ module "eks" {
   }
 }
 
+
+data "terraform_remote_state" "eks" {
+  backend = "remote"
+  config = {
+    organization = "2up"
+    workspaces = {
+      name = "terraform-jenkins-EKS-provision"
+    }
+  }
+}
 
 # https://aws.amazon.com/blogs/containers/amazon-ebs-csi-driver-is-now-generally-available-in-amazon-eks-add-ons/ 
 data "aws_iam_policy" "ebs_csi_policy" {

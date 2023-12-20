@@ -1,13 +1,9 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
 terraform {
-
   cloud {
     organization = "2up"
     workspaces {
       project = "2up-aws"
-      name = "terraform-jenkins-EKS-provision"
+      name     = "terraform-jenkins-EKS-provision"
     }
   }
 
@@ -35,4 +31,3 @@ terraform {
 
   required_version = "~> 1.3"
 }
-
