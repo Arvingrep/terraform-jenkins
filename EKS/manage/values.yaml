@@ -453,8 +453,7 @@ controller:
       alb.ingress.kubernetes.io/target-type: instance
       alb.ingress.kubernetes.io/load-balancer-name: 
       alb.ingress.kubernetes.io/backend-protocol: HTTP
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-    ingressClassName: alb
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'     
   hostName: "jenkins.2upops.com"
   tls:
   # - secretName: jenkins.cluster.local
