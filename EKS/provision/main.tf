@@ -92,15 +92,15 @@ module "eks" {
 }
 
 
-data "terraform_remote_state" "eks" {
-  backend = "remote"
-  config = {
-    organization = "2up"
-    workspaces = {
-      name = "terraform-jenkins-EKS-provision"
-    }
-  }
-}
+# data "terraform_remote_state" "eks" {
+#   backend = "remote"
+#   config = {
+#     organization = "2up"
+#     workspaces = {
+#       name = "terraform-jenkins-EKS-provision"
+#     }
+#   }
+# }
 
 # https://aws.amazon.com/blogs/containers/amazon-ebs-csi-driver-is-now-generally-available-in-amazon-eks-add-ons/ 
 data "aws_iam_policy" "ebs_csi_policy" {
@@ -127,4 +127,21 @@ resource "aws_eks_addon" "ebs-csi" {
     "eks_addon" = "ebs-csi"
     "terraform" = "true"
   }
+}
+
+
+
+################################################################################
+# AWS ALB Controller
+################################################################################
+
+module "aws_alb_controller" {
+  source = "./modules/aws-alb-controller"
+
+  main-region  = var.main-region
+  env_name     = var.used_name
+  cluster_name = local.cluster_name
+
+  vpc_id            = module.vpc.vpc_id
+  oidc_provider_arn = module.eks.oidc_provider_arn
 }
