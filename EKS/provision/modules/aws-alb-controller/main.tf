@@ -50,7 +50,7 @@ resource "helm_release" "lb" {
 
   set {
     name  = "region"
-    value = var.main-region
+    value = var.region
   }
 
   set {
@@ -60,7 +60,7 @@ resource "helm_release" "lb" {
 
   set {
     name  = "image.repository"
-    value = "602401143452.dkr.ecr.${var.main-region}.amazonaws.com/amazon/aws-load-balancer-controller"
+    value = "602401143452.dkr.ecr.${var.region}.amazonaws.com/amazon/aws-load-balancer-controller"
   }
 
   set {

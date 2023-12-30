@@ -1,10 +1,11 @@
 ################################################################################
 # General Variables from root module
 ################################################################################
-variable "profile" {
+variable "used_name" {
   type    = string
 }
 
-variable "main-region" {
+variable "cluster_name" {
   type    = string
 }
+

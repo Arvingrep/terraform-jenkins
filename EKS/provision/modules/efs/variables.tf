@@ -2,24 +2,27 @@
 # General Variables from root module
 ################################################################################
 
-variable "region" {
-  type    = string
-}
+ 
 
-variable "env_name" {
-  type    = string
-}
-
-variable "cluster_name" {
-  type    = string
-}
 
 ################################################################################
 # Variables from other Modules
 ################################################################################
 
 variable "vpc_id" {
-  description = "VPC ID which Load balancers will be  deployed in"
+  description = "VPC ID which EFS will be  deployed in"
+  type = string
+}
+
+
+variable "private_subnets" {
+  description = " private_subnets which EFS will be  deployed in"
+
+}
+
+
+variable "vpc_cidr" {
+  description = "VPC ID which EFS will be  deployed in"
   type = string
 }
 

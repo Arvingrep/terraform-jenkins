@@ -1,10 +1,12 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-variable "main-region" {
-  type    = string
-  default = "ap-southeast-1"
-}
+
+################################################################################
+# EKS Cluster Variables
+################################################################################
+
+
 variable "region" {
   description = "AWS region"
   type        = string
@@ -16,3 +18,4 @@ variable "used_name" {
   type = string
   default = "terraform-jenkins"
 }
+
