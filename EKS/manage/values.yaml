@@ -449,6 +449,7 @@ controller:
     apiVersion: "networking.k8s.io/v1"  # Use 'networking.k8s.io/v1' for Kubernetes v1.19+
     labels: {}
     annotations: 
+      ingressClassName: alb
       alb.ingress.kubernetes.io/scheme: internal
       alb.ingress.kubernetes.io/target-type: instance
       alb.ingress.kubernetes.io/load-balancer-name: 
