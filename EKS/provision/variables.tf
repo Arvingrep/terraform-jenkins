@@ -19,3 +19,9 @@ variable "used_name" {
   default = "terraform-jenkins"
 }
 
+variable "aws_secret_access_key" {
+  description = "aws_secret_access_key  in the terraform"
+}
+variable "aws_access_key_id" {
+  description = "aws_access_key_id  in the terraform"
+}
