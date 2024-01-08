@@ -451,7 +451,8 @@ controller:
     # - backend:
     #     serviceName: ssl-redirect
     #     servicePort: use-annotation
-      - backend:
+      - pathType: Prefix 
+        backend:
           serviceName: >-
             {{ template "jenkins.fullname" . }}
           # Don't use string here, use only integer value!
