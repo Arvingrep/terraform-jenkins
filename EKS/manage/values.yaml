@@ -458,7 +458,7 @@ controller:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: instance
       alb.ingress.kubernetes.io/backend-protocol: HTTP
-      alb.ingress.kubernetes.io/listen-ports: [{"HTTP":80},{"HTTP":8080}]     
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTP":8080}]'     
     hostName: "jenkins.2upops.com"
     tls:
     # - secretName: jenkins.cluster.local
