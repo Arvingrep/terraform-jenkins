@@ -446,6 +446,7 @@ controller:
 
   ingress:
     enabled: true
+    ingressClassName: 'alb'
     # Override for the default paths that map requests to the backend
     paths: []
     # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
@@ -454,8 +455,8 @@ controller:
     apiVersion: "networking.k8s.io/v1"  # Use 'networking.k8s.io/v1' for Kubernetes v1.19+
     labels: {}
     annotations: 
-      kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/scheme: internet-facing  
+      kubernetes.io/ingress.class: 'alb'
+      alb.ingress.kubernetes.io/scheme: 'internet-facing'  
     hostName: "jenkins.2upops.com"
     tls:
     # - secretName: jenkins.cluster.local
