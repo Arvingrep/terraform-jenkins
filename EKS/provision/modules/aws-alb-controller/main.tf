@@ -77,5 +77,9 @@ resource "helm_release" "lb" {
     name  = "clusterName"
     value = var.cluster_name
   }
+  set {
+    name = "ingressClassConfig.default"
+    value = true
+  }
 }
 

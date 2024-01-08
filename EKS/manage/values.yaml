@@ -446,13 +446,25 @@ controller:
 
   ingress:
     enabled: true
+    # Override for the default paths that map requests to the backend
+    paths: []
+    # - backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
+    # - backend:
+    #     serviceName: >-
+    #       {{ template "jenkins.fullname" . }}
+    #     # Don't use string here, use only integer value!
+    #     servicePort: 8080
+    # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
+    # For Kubernetes v1.19+, use 'networking.k8s.io/v1'
+
     apiVersion: "networking.k8s.io/v1"  # Use 'networking.k8s.io/v1' for Kubernetes v1.19+
     labels: {}
     annotations: 
-      ingressClassName: alb
+      kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/scheme: internal
       alb.ingress.kubernetes.io/target-type: instance
-      alb.ingress.kubernetes.io/load-balancer-name: 
       alb.ingress.kubernetes.io/backend-protocol: HTTP
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'     
   hostName: "jenkins.2upops.com"
