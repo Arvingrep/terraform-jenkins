@@ -459,11 +459,11 @@ controller:
       alb.ingress.kubernetes.io/target-type: instance
       alb.ingress.kubernetes.io/backend-protocol: HTTP
       alb.ingress.kubernetes.io/listen-ports: [{"HTTP":80}]     
-  hostName: "jenkins.2upops.com"
-  tls:
-  # - secretName: jenkins.cluster.local
-  #   hosts:
-  #     - jenkins.cluster.local
+    hostName: "jenkins.2upops.com"
+    tls:
+    # - secretName: jenkins.cluster.local
+    #   hosts:
+    #     - jenkins.cluster.local
 
 
   # often you want to have your controller all locked down and private
