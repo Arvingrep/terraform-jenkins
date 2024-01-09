@@ -457,6 +457,7 @@ controller:
     labels: {}
     annotations: 
       kubernetes.io/ingress.class: 'alb'
+      alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/scheme: 'internet-facing'  
     hostName: "jenkins.2upops.com"
     tls:
