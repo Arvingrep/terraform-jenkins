@@ -458,6 +458,7 @@ controller:
     annotations: 
       kubernetes.io/ingress.class: 'alb'
       alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/load-balancer-name: jenkins-web
       alb.ingress.kubernetes.io/scheme: 'internet-facing' 
       alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-southeast-1:934891041601:certificate/187afc88-43fa-4148-b114-6f2afee32e50
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
