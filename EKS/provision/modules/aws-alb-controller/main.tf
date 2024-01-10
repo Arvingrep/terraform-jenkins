@@ -44,6 +44,7 @@ resource "helm_release" "lb" {
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
+  version    = "1.6.2"
   depends_on = [
     kubernetes_service_account.service-account
   ]
@@ -56,11 +57,6 @@ resource "helm_release" "lb" {
   set {
     name  = "vpcId"
     value = var.vpc_id
-  }
-
-  set {
-    name  = "image.repository"
-    value = "602401143452.dkr.ecr.${var.region}.amazonaws.com/amazon/aws-load-balancer-controller"
   }
 
   set {
