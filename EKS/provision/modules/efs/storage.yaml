@@ -1,0 +1,45 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: fs-0a4d5f42b0d27202a
+  directoryPerms: "700"
+  gidRangeStart: "1000" # optional
+  gidRangeEnd: "2000" # optional
+  basePath: "/dynamic_provisioning" # optional
+  subPathPattern: "efs-sc" # optional
+  ensureUniqueDirectory: "true" # optional
+  reuseAccessPoint: "false" # optional
+
+# kubectl apply -f /Users/uponly/terraform-jenkins/EKS/provision/modules/efs/storage.yaml -n kube-system
+
+########################
+#  STORAGE_CLASS FOR EFS  #
+########################
+# provider "kubectl" {
+#   config_path = "~/.kube/config"
+# }
+# resource "kubectl_manifest" "storage_class" {
+#   count      = (var.enabled && var.create_storage_class) ? 1 : 0
+#   yaml_body  = <<YAML
+# kind: StorageClass
+# apiVersion: storage.k8s.io/v1
+# metadata:
+#   name: ${var.storage_class_name}
+# provisioner: efs.csi.aws.com
+# parameters:
+#   provisioningMode: efs-ap
+#   fileSystemId: ${aws_efs_file_system.efs_file_system.id}
+#   directoryPerms: "700"
+#   gidRangeStart: "1000" # optional
+#   gidRangeEnd: "2000" # optional
+#   basePath: "/dynamic_provisioning" # optional
+#   subPathPattern: "${var.storage_class_name}" # optional
+#   ensureUniqueDirectory: "true" # optional
+#   reuseAccessPoint: "false" # optional
+# YAML
+#   depends_on = [helm_release.kubernetes_efs_csi_driver]
+# }

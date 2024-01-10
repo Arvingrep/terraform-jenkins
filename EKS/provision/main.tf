@@ -99,10 +99,9 @@ resource "aws_eks_addon" "ebs-csi" {
 module "aws_alb_controller" {
   source = "./modules/aws-alb-controller"
   
-  region  = var.region
-  env_name     = var.used_name
-  cluster_name = local.cluster_name
-
+  region            = var.region
+  env_name          = var.used_name
+  cluster_name      = local.cluster_name
   vpc_id            = module.vpc.vpc_id
   oidc_provider_arn = module.eks.oidc_provider_arn
 }
