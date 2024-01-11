@@ -878,9 +878,12 @@ persistence:
   size: "8Gi"
   # Existing data source to clone PVC from
   # ref: https://kubernetes.io/docs/concepts/storage/volume-pvc-datasource/
-  dataSource:
-  #   name: PVC-NAME
+  #手动固定
+  # dataSource:
+  #   name: jenkins
   #   kind: PersistentVolumeClaim
+  #   uid: 4ed0336b-8c56-4fbc-bdd5-7353ec23108f
+  # kubectl patch pv pvc-51cdd32c-3db8-4c21-afa9-b612649de096 -n jenkins --type merge -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
   volumes:
   #  - name: nothing
   #    emptyDir: {}
