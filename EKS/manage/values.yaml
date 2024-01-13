@@ -790,12 +790,13 @@ agent:
   #        memory: 2Gi
 
   additionalContainers: 
-    - sideContainerName: dind
+    - sideContainerName: docker
       image: docker
       tag: dind
       command: dockerd-entrypoint.sh
       args: ""
       privileged: true
+      tty: true
       resources:
         requests:
           cpu: 500m
@@ -803,6 +804,20 @@ agent:
         limits:
           cpu: 1
           memory: 2Gi
+
+    - sideContainerName: maven
+      image:  maven
+      tag: 3.8.1-jdk-11
+      command: "/bin/sh -c"
+      args: "cat"
+      tty: true
+      resources:
+        requests:
+          cpu: 500m
+          memory: 500Mi
+        limits:
+          cpu: 1
+          memory: 1Gi
 
   # Disable the default Jenkins Agent configuration.
   # Useful when configuring agents only with the podTemplates value, since the default podTemplate populated by values mentioned above will be excluded in the rendered template.
