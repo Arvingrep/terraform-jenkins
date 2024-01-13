@@ -628,7 +628,7 @@ agent:
   kubernetesConnectTimeout: 5
   kubernetesReadTimeout: 15
   maxRequestsPerHostStr: "32"
-  retentionTimeout: 5
+  retentionTimeout: 120
   waitForPodSec: 600
   namespace:
   # private registry for agent image
