@@ -43,3 +43,24 @@ parameters:
 # YAML
 #   depends_on = [helm_release.kubernetes_efs_csi_driver]
 # }
+
+# 重新绑定pvc
+# kubectl patch pv pvc-1e32281e-1ba4-4bcb-b4d8-0fd71d0e99f2 -p '{"spec":{"claimRef":null}}'
+# kubectl patch pv pvc-1e32281e-1ba4-4bcb-b4d8-0fd71d0e99f2 -p '{"status":{"phase":"Available"}}'
+
+# kubectl apply -f - <<EOF
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: jenkins
+#   namespace: jenkins
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 8Gi
+#   storageClassName: efs-sc
+#   volumeName: pvc-1e32281e-1ba4-4bcb-b4d8-0fd71d0e99f2
+# EOF
+

@@ -43,11 +43,17 @@ module "eks" {
     one = {
       name = "node-group-1"
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.xlarge"]
 
       min_size     = 1
-      max_size     = 3
+      max_size     = 5
       desired_size = 2
+
+       # 添加 Cluster Autoscaler 标签
+      extra_node_group_tags = {
+        "k8s.io/cluster-autoscaler/node-template/label/eks.amazonaws.com/capacity-type" = "ON_DEMAND"
+      }
+
     }
 
     two = {
@@ -56,8 +62,14 @@ module "eks" {
       instance_types = ["t3.small"]
 
       min_size     = 1
-      max_size     = 2
+      max_size     = 15
       desired_size = 1
+
+      # 添加 Cluster Autoscaler 标签
+      extra_node_group_tags = {
+        "k8s.io/cluster-autoscaler/node-template/label/eks.amazonaws.com/capacity-type" = "SPOT"
+      }
+
     }
   }
 }

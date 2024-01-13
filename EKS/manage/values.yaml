@@ -774,7 +774,7 @@ agent:
 
   # Add additional containers to the agents.
   # Containers specified here are added to all agents. Set key empty to remove container from additional agents.
-  additionalContainers: []
+  #additionalContainers: []
   #  - sideContainerName: dind
   #    image: docker
   #    tag: dind
@@ -788,6 +788,21 @@ agent:
   #      limits:
   #        cpu: 1
   #        memory: 2Gi
+
+  additionalContainers: 
+    - sideContainerName: dind
+      image: docker
+      tag: dind
+      command: dockerd-entrypoint.sh
+      args: ""
+      privileged: true
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 1
+          memory: 2Gi
 
   # Disable the default Jenkins Agent configuration.
   # Useful when configuring agents only with the podTemplates value, since the default podTemplate populated by values mentioned above will be excluded in the rendered template.
@@ -863,7 +878,7 @@ persistence:
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  existingClaim:
+  existingClaim: jenkins
   ## jenkins data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -883,7 +898,7 @@ persistence:
   #   name: jenkins
   #   kind: PersistentVolumeClaim
   #   uid: 4ed0336b-8c56-4fbc-bdd5-7353ec23108f
-  # kubectl patch pv pvc-51cdd32c-3db8-4c21-afa9-b612649de096 -n jenkins --type merge -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+  # kubectl patch pv pvc-1e32281e-1ba4-4bcb-b4d8-0fd71d0e99f2  -n jenkins --type merge -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
   volumes:
   #  - name: nothing
   #    emptyDir: {}
