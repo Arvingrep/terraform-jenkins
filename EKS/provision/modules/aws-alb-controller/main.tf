@@ -68,7 +68,10 @@ resource "helm_release" "lb" {
     name  = "serviceAccount.name"
     value = "aws-load-balancer-controller"
   }
-
+  set {
+    name  = "image.repository"
+    value = "602401143452.dkr.ecr.${var.region}.amazonaws.com/amazon/aws-load-balancer-controller"
+  }
   set {
     name  = "clusterName"
     value = var.cluster_name

@@ -26,8 +26,8 @@ controller:
   # Used for label app.kubernetes.io/component
   componentName: "jenkins-controller"
   image: "jenkins/jenkins"
-  tag: "2.426.2-jdk17"
-  tagLabel: jdk17
+  tag: "centos7-jdk11"
+  tagLabel: 
   imagePullPolicy: "Always"
   imagePullSecretName:
   # Optionally configure lifetime for controller-container
@@ -634,11 +634,12 @@ agent:
   # private registry for agent image
   jnlpregistry:
   image: "jenkins/inbound-agent"
-  tag: "3192.v713e3b_039fb_e-5"
+  # tag: "3192.v713e3b_039fb_e-5"
+  tag: "jdk11"
   workingDir: "/home/jenkins/agent"
   nodeUsageMode: "NORMAL"
   customJenkinsLabels: []
-  # name of the secret to be used for image pulling
+  # nam"centos7-jdk11"e pulling
   imagePullSecretName:
   componentName: "jenkins-agent"
   websocket: false
@@ -756,7 +757,17 @@ agent:
   # Raw yaml template for the Pod. For example this allows usage of toleration for agent pods.
   # https://github.com/jenkinsci/kubernetes-plugin#using-yaml-to-define-pod-templates
   # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-  yamlTemplate: ""
+  # yamlTemplate: ""
+  yamlTemplate: |-
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+      - name: maven
+        image: maven:3.8.1-jdk-11
+        command:
+        - cat
+        tty: true
   # yamlTemplate: |-
   #   apiVersion: v1
   #   kind: Pod
@@ -774,50 +785,21 @@ agent:
 
   # Add additional containers to the agents.
   # Containers specified here are added to all agents. Set key empty to remove container from additional agents.
-  #additionalContainers: []
-  #  - sideContainerName: dind
-  #    image: docker
-  #    tag: dind
-  #    command: dockerd-entrypoint.sh
-  #    args: ""
-  #    privileged: true
-  #    resources:
-  #      requests:
-  #        cpu: 500m
-  #        memory: 1Gi
-  #      limits:
-  #        cpu: 1
-  #        memory: 2Gi
-
   additionalContainers: 
-    - sideContainerName: docker
-      image: docker
-      tag: dind
-      command: dockerd-entrypoint.sh
-      args: ""
-      privileged: true
-      tty: true
-      resources:
-        requests:
-          cpu: 500m
-          memory: 1Gi
-        limits:
-          cpu: 1
-          memory: 2Gi
-
-    - sideContainerName: maven
-      image:  maven
-      tag: 3.8.1-jdk-11
-      command: "/bin/sh -c"
-      args: "cat"
-      tty: true
-      resources:
-        requests:
-          cpu: 500m
-          memory: 500Mi
-        limits:
-          cpu: 1
-          memory: 1Gi
+   - sideContainerName: docker
+     image: docker
+     tag:  latest
+     command: dockerd-entrypoint.sh
+     args: ""
+     tty: true
+     privileged: true
+     resources:
+       requests:
+         cpu: 500m
+         memory: 1Gi
+       limits:
+         cpu: 1
+         memory: 2Gi
 
   # Disable the default Jenkins Agent configuration.
   # Useful when configuring agents only with the podTemplates value, since the default podTemplate populated by values mentioned above will be excluded in the rendered template.
@@ -846,6 +828,7 @@ agent:
   #          resourceRequestMemory: "512Mi"
   #          resourceLimitCpu: "1"
   #          resourceLimitMemory: "1024Mi"
+  
 
 # Here you can add additional agents
 # They inherit all values from `agent` so you only need to specify values which differ
